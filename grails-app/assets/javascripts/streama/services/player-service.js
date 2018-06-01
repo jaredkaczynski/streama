@@ -117,7 +117,7 @@ angular.module('streama').factory('playerService',
         }, 5000);
 
 
-        if($stateParams.sessionId && !socketData){
+        if($stateParams.sessionId && !socketData ){
           console.log('%c send socket event PLAY', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
           apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'play', currentPlayerTime: videoElement.currentTime});
         }
@@ -134,8 +134,7 @@ angular.module('streama').factory('playerService',
           }
         }
 
-
-        if($stateParams.sessionId && !socketData){
+        if($stateParams.sessionId && !socketData && $rootScope.currentUser.isAdmin){
           console.log('%c send socket event PAUSE', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
           apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'pause', currentPlayerTime: videoElement.currentTime});
         }
@@ -203,7 +202,7 @@ angular.module('streama').factory('playerService',
         apiService.viewingStatus.save(params);
 
 
-        if($stateParams.sessionId){
+        if($stateParams.sessionId  && $rootScope.currentUser.isAdmin){
           apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'timeChange', currentPlayerTime: slider.value});
         }
       },
