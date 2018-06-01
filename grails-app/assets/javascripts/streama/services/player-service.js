@@ -5,6 +5,8 @@ angular.module('streama').factory('playerService',
 
     var videoData = null;
     var videoOptions;
+	var ranOnce = false;
+	var timeRepeatInterval;
     var defaultVideoOptions = {
       customStartingTime: 0,
       rememberVolumeSetting: true,
@@ -110,17 +112,22 @@ angular.module('streama').factory('playerService',
 
         that.viewingStatusSaveInterval = $interval(function() {
           var params = {videoId: videoData.id, currentTime: videoElement.currentTime, runtime: videoElement.duration};
-
           if(params.runtime && params.videoId){
             apiService.viewingStatus.save(params);
           }
         }, 5000);
+	
+		if($stateParams.sessionId && !socketData && $rootScope.currentUser.isAdmin && !ranOnce){
+          console.log('%c send socket event repeatTime', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
+		  timeRepeatInterval = setInterval(function(){apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'timeChange', currentPlayerTime: videoElement.currentTime});
+			}, 500);
+        }
 
-
-        if($stateParams.sessionId && !socketData ){
+        if($stateParams.sessionId && !socketData){
           console.log('%c send socket event PLAY', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
           apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'play', currentPlayerTime: videoElement.currentTime});
         }
+		ranOnce = true;
       },
 
       onVideoPause: function (videoElement, socketData) {
@@ -142,6 +149,7 @@ angular.module('streama').factory('playerService',
 
       onVideoClose: function () {
         console.log('%c onVideoClose', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
+		clearInterval(timeRepeatInterval);
         var that = this;
         $state.go('dash', {});
       },
