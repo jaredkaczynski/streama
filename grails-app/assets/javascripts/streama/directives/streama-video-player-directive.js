@@ -237,8 +237,8 @@ angular.module('streama').directive('streamaVideoPlayer', [
 						}
 					});
 					$scope.$on('triggerVideoTimeChange', function (e, data) {
-						//Only change if time difference > 5%
-						if(Math.abs(((video.currentTime + 1)-(data.currentPlayerTime + 1))/(data.currentPlayerTime + 1) * 100) > 5){
+						//Only change if time difference > 5% and user is not admin
+						if(Math.abs(((video.currentTime + 1)-(data.currentPlayerTime + 1))/(data.currentPlayerTime + 1) * 100) > 5 && !$rootScope.currentUser.isAdmin){
 						video.currentTime = data.currentPlayerTime;
 						$scope.currentTime = data.currentPlayerTime;
 						}

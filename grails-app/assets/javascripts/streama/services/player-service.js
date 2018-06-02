@@ -120,7 +120,7 @@ angular.module('streama').factory('playerService',
 		if($stateParams.sessionId && !socketData && $rootScope.currentUser.isAdmin && !ranOnce){
           console.log('%c send socket event repeatTime', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
 		  timeRepeatInterval = setInterval(function(){apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'timeChange', currentPlayerTime: videoElement.currentTime});
-			}, 500);
+			}, 5000);
         }
 
         if($stateParams.sessionId && !socketData){
@@ -141,7 +141,7 @@ angular.module('streama').factory('playerService',
           }
         }
 
-        if($stateParams.sessionId && !socketData && $rootScope.currentUser.isAdmin){
+        if($stateParams.sessionId && !socketData && ($rootScope.currentUser.isAdmin || $rootScope.currentUser.isContentManager)){
           console.log('%c send socket event PAUSE', 'color: deeppink; font-weight: bold; text-shadow: 0 0 5px deeppink;');
           apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'pause', currentPlayerTime: videoElement.currentTime});
         }
@@ -210,7 +210,7 @@ angular.module('streama').factory('playerService',
         apiService.viewingStatus.save(params);
 
 
-        if($stateParams.sessionId  && $rootScope.currentUser.isAdmin){
+        if($stateParams.sessionId  && ($rootScope.currentUser.isAdmin || $rootScope.currentUser.isContentManager)){
           apiService.websocket.triggerPlayerAction({socketSessionId: $stateParams.sessionId, playerAction: 'timeChange', currentPlayerTime: slider.value});
         }
       },
