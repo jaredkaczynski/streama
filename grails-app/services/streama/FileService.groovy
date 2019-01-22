@@ -11,10 +11,11 @@ class FileService {
 
   def allowedVideoFormats = ['.mp4', '.mkv', '.webm', '.ogg', '.m4v']
 
-  def serveVideo(request, response, rawFile, File file) {
+  def serveVideo(request, response, rawFile, File file, String filePath) {
     def rangeHeader = request.getHeader("Range")
     //bytes=391694320-
 
+    System.out.println(filePath)
 
     def fileLength = rawFile.length()
     def contentLength = rawFile.length().toString()
